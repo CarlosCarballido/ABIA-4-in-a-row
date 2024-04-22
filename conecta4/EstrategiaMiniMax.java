@@ -6,10 +6,10 @@ public class EstrategiaMiniMax extends Estrategia {
      * "establecerEvaluador()" y "establecerCapaMaxima()"
      */
      
-    private Evaluador _evaluador;
-    private int _capaMaxima;
+    protected Evaluador _evaluador;
+    protected int _capaMaxima;
 
-    private int _jugadorMAX; // - guarda el identificador del jugador
+    protected int _jugadorMAX; // - guarda el identificador del jugador
                              //   que hace el papel de MAX
 			     // - necesario al hacer las evaluaciones
 			     //   de posiciones finales (ganador, perdedor, empate)
@@ -124,7 +124,7 @@ public class EstrategiaMiniMax extends Estrategia {
    public void establecerEvaluador(Evaluador evaluador) {
       _evaluador = evaluador;
    }
-    private static final boolean esCapaMIN(int capa) {
+    protected static final boolean esCapaMIN(int capa) {
         return((capa % 2)==1); // es impar
     }
     
@@ -132,14 +132,14 @@ public class EstrategiaMiniMax extends Estrategia {
         return((capa % 2)==0); // es par
     }
     
-    private static final int maximo2(int v1, int v2) {
+    protected static final int maximo2(int v1, int v2) {
         if (v1 > v2)
             return(v1);
         else
             return(v2);
     }
     
-    private static final int minimo2(int v1, int v2) {
+    protected static final int minimo2(int v1, int v2) {
         if (v1 < v2)
             return(v1);
         else
