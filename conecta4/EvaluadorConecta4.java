@@ -1,9 +1,40 @@
 public class EvaluadorConecta4 extends Evaluador {
     // Pesos para los rasgos de evaluación
-    private static final int PESO_FICHAS_EN_LINEA = 100;
-    private static final int PESO_BLOQUEO_OPPONENTE = -50;
-    private static final int PESO_CENTRO_TABLERO = 30;
-    private static final int PESO_CONEXIONES_POTENCIALES = 80;
+    private static int PESO_FICHAS_EN_LINEA = 100;
+    private static int PESO_BLOQUEO_OPPONENTE = -50;
+    private static int PESO_CENTRO_TABLERO = 30;
+    private static int PESO_CONEXIONES_POTENCIALES = 80;
+
+    // Método para ajustar manualmente los pesos
+    public void ajustarPesosManualmente(int pesoFichasEnLinea, int pesoBloqueoOponente, int pesoCentroTablero, int pesoConexionesPotenciales) {
+        EvaluadorConecta4.PESO_FICHAS_EN_LINEA = pesoFichasEnLinea;
+        EvaluadorConecta4.PESO_BLOQUEO_OPPONENTE = pesoBloqueoOponente;
+        EvaluadorConecta4.PESO_CENTRO_TABLERO = pesoCentroTablero;
+        EvaluadorConecta4.PESO_CONEXIONES_POTENCIALES = pesoConexionesPotenciales;
+    }
+
+    public static void ajustarPesosAutomaticamente(String resultadoUltimaPartida) {
+        // Factor de ajuste para incrementar o decrementar los pesos
+        double factorAjuste = 0.1; // Este valor puede ser ajustado según sea necesario
+
+        // Ajustar los pesos en función del resultado de la última partida
+        if (resultadoUltimaPartida == "GANADO") {
+            // Si se ganó la última partida, aumentar los pesos
+            PESO_FICHAS_EN_LINEA *= (1 + factorAjuste);
+            PESO_BLOQUEO_OPPONENTE *= (1 + factorAjuste);
+            PESO_CENTRO_TABLERO *= (1 + factorAjuste);
+            PESO_CONEXIONES_POTENCIALES *= (1 + factorAjuste);
+        } else if (resultadoUltimaPartida == "PERDIDO") {
+            // Si se perdió la última partida, disminuir los pesos
+            PESO_FICHAS_EN_LINEA *= (1 - factorAjuste);
+            PESO_BLOQUEO_OPPONENTE *= (1 - factorAjuste);
+            PESO_CENTRO_TABLERO *= (1 - factorAjuste);
+            PESO_CONEXIONES_POTENCIALES *= (1 - factorAjuste);
+        } else {
+            // No se hace nada si el resultado fue un empate
+        }
+        // No se hace nada si el resultado fue un empate
+    }
 
     @Override
     public int valoracion(Tablero tablero, int jugador) {
