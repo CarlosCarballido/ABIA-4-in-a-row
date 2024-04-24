@@ -279,4 +279,21 @@ public class Tablero {
         return(jugador == _ganador);
     }
     
+    public static final int CASILLA_VACIA = 0;
+
+    public int obtenerCasilla(int fila, int columna) {
+        // Verificar si las coordenadas están dentro de los límites del tablero
+        if (fila < 0 || fila >= NFILAS || columna < 0 || columna >= NCOLUMNAS) {
+            // Devolver un valor que represente una casilla fuera del tablero
+            return -1; // Por ejemplo, podríamos devolver -1 para indicar que la casilla está fuera del tablero
+        }
+        // Devolver el valor de la casilla en las coordenadas dadas
+        return _casillas[columna][fila];
+    }
+
+    public boolean esCasillaValida(int fila, int columna) {
+        // Verificar si las coordenadas están dentro de los límites del tablero
+        return (fila >= 0 && fila < NFILAS && columna >= 0 && columna < NCOLUMNAS);
+    }
+    
 }  // Fin clase Tablero
