@@ -5,6 +5,60 @@
 
  import java.util.Scanner;
 
+/**
+ *
+ * @author  ribadas
+ */
+public class Conecta4 {
+    
+    private Jugador _jugador1;    
+    private Jugador _jugador2;
+    private Tablero _tablero;
+    
+    /** Creates a new instance of Conecta4 */
+    public Conecta4() {
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        cargarArgumentos(args);
+
+        // Crear jugadores y establecer estrategias
+	// Jugador 1: jugador humano
+        Jugador jugador1 = new Jugador(1);
+        jugador1.establecerEstrategia(new EstrategiaHumano());
+        DEBUG("Jugador 1: humano\n");
+       
+        // Jugador 2: jugador minimax con evaluador aleatorio y prof. busqueda 4
+        Jugador jugador2 = new Jugador(2);
+        jugador2.establecerEstrategia(new EstrategiaMiniMax_AlfaBeta(new EvaluadorAleatorio(), 4));
+        DEBUG("Jugador 2: maquina (minimax con eval. aleatorio + prof. 4)\n");
+       
+        // Jugar
+        Tablero tablero = new Tablero();
+        tablero.inicializar();
+        jugar(jugador1, jugador2, tablero);
+                
+        // Mostrar resultados
+        tablero.mostrar();
+        if (tablero.hayEmpate()) {
+            System.out.println("RESULTADO: Empate");
+        }
+        if (tablero.ganaJ1()){
+            System.out.println("RESULTADO: Gana jugador 1");
+        }
+        if (tablero.ganaJ2()){
+            System.out.println("RESULTADO: Gana jugador 2");
+        }
+        System.exit(1);
+    }
+
+    private static void cargarArgumentos(String[] args) {
+        // procesar parametros de linea de comandos
+    }
+
  /**
   *
   * @author  ribadas
