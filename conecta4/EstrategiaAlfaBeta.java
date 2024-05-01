@@ -1,9 +1,9 @@
-public class EstrategiaMiniMax_AlfaBeta extends EstrategiaMiniMax {
-    public EstrategiaMiniMax_AlfaBeta() {
+public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
+    public EstrategiaAlfaBeta() {
         super();
     }
 
-    public EstrategiaMiniMax_AlfaBeta(Evaluador evaluador, int capaMaxima) {
+    public EstrategiaAlfaBeta(Evaluador evaluador, int capaMaxima) {
         super(evaluador, capaMaxima);
     }
 

@@ -296,4 +296,83 @@ public class Tablero {
         return (fila >= 0 && fila < NFILAS && columna >= 0 && columna < NCOLUMNAS);
     }
     
-}  // Fin clase Tablero
+    public void enfrentarJuegosDePesos(EvaluadorPonderado juegoPesos1, EvaluadorPonderado juegoPesos2) {
+        int victoriasJuego1 = 0;
+        int victoriasJuego2 = 0;
+        int empates = 0;
+        
+        // Número de partidas a jugar
+        int numeroPartidas = 8; // Podrías ajustar este valor según tu preferencia
+        
+        // Alternar quién empieza en cada partida
+        for (int i = 0; i < numeroPartidas; i++) {
+            // Crear un nuevo tablero para cada partida
+            Tablero tablero = new Tablero();
+    
+            // Jugar la partida, alternando quién empieza
+            String resultado = (i % 2 == 0) ? jugarPartida(tablero, juegoPesos1, juegoPesos2) : jugarPartida(tablero, juegoPesos2, juegoPesos1);
+    
+            // Contabilizar el resultado
+            if (resultado.equals("GANADO_J1")) {
+                victoriasJuego1++;
+            } else if (resultado.equals("GANADO_J2")) {
+                victoriasJuego2++;
+            } else {
+                empates++;
+            }
+        }
+        
+        // Imprimir los resultados
+        System.out.println("Resultados de enfrentamiento:");
+        System.out.println("Victorias Juego 1: " + victoriasJuego1);
+        System.out.println("Victorias Juego 2: " + victoriasJuego2);
+        System.out.println("Empates: " + empates);
+    }
+    
+    private String jugarPartida(Tablero tablero, EvaluadorPonderado jugador1, EvaluadorPonderado jugador2) {
+        // Creamos los jugadores con los evaluadores ponderados correspondientes
+        Jugador j1 = new Jugador(1);
+        j1.establecerEstrategia(jugador1);
+        Jugador j2 = new Jugador(2);
+        j2.establecerEstrategia(jugador2);
+        
+        // Variable para almacenar el resultado de la partida
+        int resultado = -1; // -1 para empate, 1 para victoria de J1, 2 para victoria de J2
+        
+        // Jugar la partida hasta que haya un ganador o se llene el tablero
+        while (!tablero.finalJuego()) {
+            // Turno del jugador 1
+            int columnaJ1 = j1.obtenerJugada(tablero);
+            tablero.anadirFicha(columnaJ1, 1);
+            if (tablero.esGanador(1)) {
+                resultado = 1; // Victoria de J1
+                break;
+            }
+            if (tablero.hayEmpate()) {
+                resultado = -1; // Empate
+                break;
+            }
+    
+            // Turno del jugador 2
+            int columnaJ2 = j2.obtenerJugada(tablero);
+            tablero.anadirFicha(columnaJ2, 2);
+            if (tablero.esGanador(2)) {
+                resultado = 2; // Victoria de J2
+                break;
+            }
+            if (tablero.hayEmpate()) {
+                resultado = -1; // Empate
+                break;
+            }
+        }
+        
+        // Devolver el resultado como un string
+        if (resultado == 1) {
+            return "GANADO_J1";
+        } else if (resultado == 2) {
+            return "GANADO_J2";
+        } else {
+            return "EMPATE";
+        }
+    }
+}

@@ -11,6 +11,7 @@
 public class Jugador {
     
     private Estrategia _estrategia;
+    private EvaluadorPonderado _estrategiaPonderado;
     private int _identificador;
     
     /** Creates a new instance of Jugador */
@@ -35,6 +36,11 @@ public class Jugador {
     
     public static final int alternarJugador(int jugadorActual) {
         return(((jugadorActual%2)+1));  // Alterna entre jugador 1 y 2
+    }
+
+    public void establecerEstrategia(EvaluadorPonderado estrategia) {
+        // TODO Auto-generated method stub
+        _estrategiaPonderado = estrategia;
     }
     
 }

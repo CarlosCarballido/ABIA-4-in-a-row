@@ -1,4 +1,4 @@
-public class EvaluadorConecta4 extends Evaluador {
+public class EvaluadorPonderado extends Evaluador {
     // Pesos para los rasgos de evaluación
     private static int PESO_FICHAS_EN_LINEA = 100;
     private static int PESO_BLOQUEO_OPPONENTE = -50;
@@ -6,11 +6,11 @@ public class EvaluadorConecta4 extends Evaluador {
     private static int PESO_CONEXIONES_POTENCIALES = 80;
 
     // Método para ajustar manualmente los pesos
-    public void ajustarPesosManualmente(int pesoFichasEnLinea, int pesoBloqueoOponente, int pesoCentroTablero, int pesoConexionesPotenciales) {
-        EvaluadorConecta4.PESO_FICHAS_EN_LINEA = pesoFichasEnLinea;
-        EvaluadorConecta4.PESO_BLOQUEO_OPPONENTE = pesoBloqueoOponente;
-        EvaluadorConecta4.PESO_CENTRO_TABLERO = pesoCentroTablero;
-        EvaluadorConecta4.PESO_CONEXIONES_POTENCIALES = pesoConexionesPotenciales;
+    public void ajustarPesosManualmente(int PESO_FICHAS_EN_LINEA, int pesoBloqueoOponente, int pesoCentroTablero, int pesoConexionesPotenciales) {
+        EvaluadorPonderado.PESO_FICHAS_EN_LINEA = PESO_FICHAS_EN_LINEA;
+        EvaluadorPonderado.PESO_BLOQUEO_OPPONENTE = pesoBloqueoOponente;
+        EvaluadorPonderado.PESO_CENTRO_TABLERO = pesoCentroTablero;
+        EvaluadorPonderado.PESO_CONEXIONES_POTENCIALES = pesoConexionesPotenciales;
     }
 
     public static void ajustarPesosAutomaticamente(String resultadoUltimaPartida) {
@@ -54,6 +54,8 @@ public class EvaluadorConecta4 extends Evaluador {
 
         return valoracion;
     }
+
+    // Otros métodos de la clase
 
     // Método auxiliar para contar la cantidad de fichas del jugador en línea
     private int contarFichasEnLinea(Tablero tablero, int jugador) {
@@ -114,31 +116,52 @@ public class EvaluadorConecta4 extends Evaluador {
                     conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 1, 0);  // Derecha
                     conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 0, -1); // Arriba
                     conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 0, 1);  // Abajo
-                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, -1, -1); // Diagonal arriba-izquierda
-                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, -1, 1);  // Diagonal arriba-derecha
-                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 1, -1);  // Diagonal abajo-izquierda
-                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 1, 1);   // Diagonal abajo-derecha
+                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, -1, -1); // Diagonal superior izquierda
+                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, -1, 1);  // Diagonal superior derecha
+                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 1, -1);  // Diagonal inferior izquierda
+                    conexionesPotenciales += contarConexionesPotencialesEnDireccion(tablero, jugador, fila, columna, 1, 1);   // Diagonal inferior derecha
                 }
             }
         }
-
         return conexionesPotenciales;
     }
-    // Método auxiliar para contar conexiones potenciales en una dirección específica
-    private int contarConexionesPotencialesEnDireccion(Tablero tablero, int jugador, int fila, int columna, int dirFila, int dirColumna) {
-        int conexiones = 0;
 
-        // Verificar si hay tres fichas del jugador adyacentes
-        if (tablero.esCasillaValida(fila + 2 * dirFila, columna + 2 * dirColumna) &&
-            tablero.obtenerCasilla(fila + dirFila, columna + dirColumna) == jugador &&
-            tablero.obtenerCasilla(fila + 2 * dirFila, columna + 2 * dirColumna) == jugador) {
-            // Verificar si hay una casilla vacía al lado de las tres fichas del jugador
-            if (tablero.obtenerCasilla(fila + 3 * dirFila, columna + 3 * dirColumna) == Tablero.CASILLA_VACIA ||
-                tablero.obtenerCasilla(fila, columna) == Tablero.CASILLA_VACIA) {
-                conexiones++;
+    // Método auxiliar para contar las conexiones potenciales en una dirección
+    private int contarConexionesPotencialesEnDireccion(Tablero tablero, int jugador, int fila, int columna, int dirFila, int dirColumna) {
+        // Posición actual
+        int filaActual = fila;
+        int columnaActual = columna;
+        // Contador de conexiones potenciales
+        int conexionesPotenciales = 0;
+        // Contador de fichas del jugador
+        int fichasJugador = 0;
+        // Contador de fichas del oponente
+        int fichasOponente = 0;
+
+        // Moverse en la dirección dada y contar las fichas
+        while (tablero.esCasillaValida(filaActual, columnaActual) && tablero.obtenerCasilla(filaActual, columnaActual) == jugador) {
+            fichasJugador++;
+            filaActual += dirFila;
+            columnaActual += dirColumna;
+        }
+        // Verificar si hay un espacio vacío después de las fichas del jugador
+        if (tablero.esCasillaValida(filaActual, columnaActual) && tablero.obtenerCasilla(filaActual, columnaActual) == Tablero.CASILLA_VACIA) {
+            filaActual += dirFila;
+            columnaActual += dirColumna;
+            // Moverse en la misma dirección y contar las fichas del oponente
+            while (tablero.esCasillaValida(filaActual, columnaActual) && tablero.obtenerCasilla(filaActual, columnaActual) == Jugador.alternarJugador(jugador)) {
+                fichasOponente++;
+                filaActual += dirFila;
+                columnaActual += dirColumna;
+            }
+            // Verificar si hay al menos una ficha del oponente después del espacio vacío
+            if (fichasOponente > 0) {
+                // Si hay al menos tres fichas del jugador y una del oponente, hay una conexión potencial
+                if (fichasJugador >= 3) {
+                    conexionesPotenciales++;
+                }
             }
         }
-
-        return conexiones;
+        return conexionesPotenciales;
     }
 }

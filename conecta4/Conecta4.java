@@ -39,11 +39,11 @@ public class Conecta4 {
                     DEBUG("Jugador 2: humano\n");
                     break;
                 case 2:
-                    jugador2.establecerEstrategia(new EstrategiaMiniMax_AlfaBeta(new EvaluadorAleatorio(), 4));
+                    jugador2.establecerEstrategia(new EstrategiaAlfaBeta(new EvaluadorAleatorio(), 4));
                     DEBUG("Jugador 2: máquina (minimax con evaluador aleatorio y prof. busqueda 4)\n");
                     break;
                 case 3:
-                    jugador2.establecerEstrategia(new EstrategiaMiniMax_AlfaBeta(new EvaluadorConecta4(), 4));
+                    jugador2.establecerEstrategia(new EstrategiaAlfaBeta(new EvaluadorPonderado(), 4));
                     DEBUG("Jugador 2: máquina (minimax con evaluador Conecta4 y prof. busqueda 4)\n");
                     break;
             }
@@ -69,7 +69,7 @@ public class Conecta4 {
             }
 
             // Ajustar pesos del evaluador
-            EvaluadorConecta4.ajustarPesosAutomaticamente(resultado);
+            EvaluadorPonderado.ajustarPesosAutomaticamente(resultado);
 
             // Preguntar si desea volver a jugar
             System.out.println("¿Desea jugar otra partida? (s/n)");
