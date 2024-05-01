@@ -1,4 +1,5 @@
 public class EvaluadorPonderado extends Evaluador {
+    private static final int NUMERO_PARTIDAS = 0;
     // Pesos para los rasgos de evaluación
     private static int PESO_FICHAS_EN_LINEA = 100;
     private static int PESO_BLOQUEO_OPPONENTE = -50;
@@ -18,13 +19,13 @@ public class EvaluadorPonderado extends Evaluador {
         double factorAjuste = 0.1; // Este valor puede ser ajustado según sea necesario
 
         // Ajustar los pesos en función del resultado de la última partida
-        if (resultadoUltimaPartida == "GANADO") {
+        if (resultadoUltimaPartida.equals("GANADO")) {
             // Si se ganó la última partida, aumentar los pesos
             PESO_FICHAS_EN_LINEA *= (1 + factorAjuste);
             PESO_BLOQUEO_OPPONENTE *= (1 + factorAjuste);
             PESO_CENTRO_TABLERO *= (1 + factorAjuste);
             PESO_CONEXIONES_POTENCIALES *= (1 + factorAjuste);
-        } else if (resultadoUltimaPartida == "PERDIDO") {
+        } else if (resultadoUltimaPartida.equals("PERDIDO")) {
             // Si se perdió la última partida, disminuir los pesos
             PESO_FICHAS_EN_LINEA *= (1 - factorAjuste);
             PESO_BLOQUEO_OPPONENTE *= (1 - factorAjuste);
@@ -33,7 +34,6 @@ public class EvaluadorPonderado extends Evaluador {
         } else {
             // No se hace nada si el resultado fue un empate
         }
-        // No se hace nada si el resultado fue un empate
     }
 
     @Override
@@ -163,5 +163,110 @@ public class EvaluadorPonderado extends Evaluador {
             }
         }
         return conexionesPotenciales;
+    }
+    // Método para comparar los resultados de las partidas y actualizar los pesos si hay una mejora
+    public void compararYActualizarPesos(int[] juegosDePesosActuales, int[] nuevosJuegosDePesos) {
+        boolean hayMejora = false;
+
+        // Realizar múltiples partidas y comparar resultados
+        for (int i = 0; i < NUMERO_PARTIDAS; i++) {
+            // Jugar una partida con los juegos de pesos actuales
+            int resultadoActual = jugarPartida(juegosDePesosActuales);
+
+            // Jugar una partida con los nuevos juegos de pesos
+            int resultadoNuevo = jugarPartida(nuevosJuegosDePesos);
+
+            // Comprobar si hay una mejora en los resultados
+            if (resultadoNuevo > resultadoActual) {
+                // Si hay una mejora, actualizar los juegos de pesos actuales
+                juegosDePesosActuales = nuevosJuegosDePesos;
+                hayMejora = true;
+            }
+        }
+
+        // Si hubo una mejora, repetir la iteración desde el paso 1 con los nuevos juegos de pesos
+        if (hayMejora) {
+            // Repetir la iteración desde el paso 1 con los nuevos juegos de pesos
+            ajustarPesosManualmente(juegosDePesosActuales[0], juegosDePesosActuales[1], juegosDePesosActuales[2], juegosDePesosActuales[3]);
+            // Volver a iterar con los nuevos pesos
+            compararYActualizarPesos(juegosDePesosActuales, generarNuevosPesos(juegosDePesosActuales));
+        } else {
+            // Si no hubo mejora, detener la búsqueda
+            System.out.println("No hay mejora. Deteniendo la búsqueda.");
+        }
+    }
+    // Método para generar nuevos pesos basados en los pesos actuales
+    private int[] generarNuevosPesos(int[] pesosActuales) {
+        // Factor de ajuste para incrementar o decrementar los pesos
+        double factorAjuste = 0.1; // Este valor puede ser ajustado según sea necesario
+
+        // Crear un nuevo array para almacenar los nuevos pesos
+        int[] nuevosPesos = new int[pesosActuales.length];
+
+        // Aplicar una pequeña perturbación a cada peso basada en el factor de ajuste
+        for (int i = 0; i < pesosActuales.length; i++) {
+            // Generar un valor aleatorio entre -factorAjuste y +factorAjuste
+            double perturbacion = Math.random() * 2 * factorAjuste - factorAjuste;
+            // Aplicar la perturbación al peso actual
+            nuevosPesos[i] = (int) (pesosActuales[i] * (1 + perturbacion));
+        }
+
+        // Devolver los nuevos pesos generados
+        return nuevosPesos;
+    }
+
+
+    // Método para simular una partida utilizando los juegos de pesos actuales y devolver un resultado basado en su rendimiento
+    private int jugarPartida(int[] juegosDePesos) {
+        // Crear dos jugadores con los juegos de pesos proporcionados
+        EvaluadorPonderado jugador1 = new EvaluadorPonderado();
+        EvaluadorPonderado jugador2 = new EvaluadorPonderado();
+    
+        // Ajustar los pesos de los jugadores según los juegos de pesos proporcionados
+        jugador1.ajustarPesosManualmente(juegosDePesos[0], juegosDePesos[1], juegosDePesos[2], juegosDePesos[3]);
+        jugador2.ajustarPesosManualmente(juegosDePesos[4], juegosDePesos[5], juegosDePesos[6], juegosDePesos[7]);
+    
+        // Simular una partida entre los dos jugadores
+        // Supongamos que la clase Jugador tiene un método jugar que devuelve el resultado de la partida
+        // El resultado podría ser un valor numérico que indica quién ganó o si fue un empate
+        int resultadoPartida = jugar(jugador1, jugador2);
+    
+        return resultadoPartida;
+    }
+    
+    // Método para simular una partida entre dos jugadores
+    private int jugar(EvaluadorPonderado jugador1, EvaluadorPonderado jugador2) {
+        Tablero tablero = new Tablero(); // Crear un nuevo tablero para la partida
+        int jugadorActual = 1; // Empezar con el jugador 1
+
+        // Repetir turnos hasta que haya un ganador o el tablero esté lleno
+        while (!tablero.esFinal()) {
+            // Obtener la jugada del jugador actual
+            Jugador jugador;
+            if (jugadorActual == 1) {
+                jugador = new Jugador(1); // Crear un nuevo jugador con la estrategia del jugador 1
+            } else {
+                jugador = new Jugador(2); // Crear un nuevo jugador con la estrategia del jugador 2
+            }
+            int columna = jugador.obtenerJugada(tablero);
+
+            // Realizar la jugada en el tablero
+            tablero.anadirFicha(columna, jugadorActual);
+
+            // Verificar si hay un ganador después de la jugada
+            tablero.obtenerGanador();
+
+            // Cambiar al siguiente jugador
+            jugadorActual = Jugador.alternarJugador(jugadorActual);
+        }
+
+        // Devolver el resultado de la partida
+        if (tablero.ganaJ1()) {
+            return 1; // Jugador 1 gana
+        } else if (tablero.ganaJ2()) {
+            return 2; // Jugador 2 gana
+        } else {
+            return 0; // Empate
+        }
     }
 }
