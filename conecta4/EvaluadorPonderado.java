@@ -1,41 +1,126 @@
+import java.util.ArrayList;
+import java.util.Random;
+
 public class EvaluadorPonderado extends Evaluador {
 
-    // Pesos para los rasgos de evaluación
-    private static double PESO_FICHAS_EN_LINEA = 10;
-    private static double PESO_BLOQUEO_OPPONENTE = 5;
-    private static double PESO_CENTRO_TABLERO = 3;
-    private static double PESO_CONEXIONES_POTENCIALES = 8;
+    double pesoFichasEnLinea;
+    double pesoBloqueoOponente;
+    double pesoCentroTablero;
+    double pesoConexionesPotenciales;
 
-    // Método para ajustar los pesos manualmente
-    public static void ajustarPesosManualmente(double nuevoPesoFichasEnLinea, double nuevoPesoBloqueoOponente,
-                                                double nuevoPesoCentroTablero, double nuevoPesoConexionesPotenciales) {
-        PESO_FICHAS_EN_LINEA = nuevoPesoFichasEnLinea;
-        PESO_BLOQUEO_OPPONENTE = nuevoPesoBloqueoOponente;
-        PESO_CENTRO_TABLERO = nuevoPesoCentroTablero;
-        PESO_CONEXIONES_POTENCIALES = nuevoPesoConexionesPotenciales;
+    public EvaluadorPonderado() {
+        // Pesos iniciales uniformes (todos a 1.0)
+        this.pesoFichasEnLinea = 1.0;
+        this.pesoBloqueoOponente = 1.0;
+        this.pesoCentroTablero = 1.0;
+        this.pesoConexionesPotenciales = 1.0;
     }
 
-    // Método para ajustar los pesos automáticamente basados en los resultados de las partidas
-    public static void ajustarPesosAutomaticamente(double factorAprendizaje, double maxAjuste, double resultadoUltimaPartida, int numeroPartida) {
-        // Calcular el factor de ajuste gradual
-        double factorAjuste = factorAprendizaje / (numeroPartida + 1);
+    public EvaluadorPonderado(double pesoFichasEnLinea, double pesoBloqueoOponente, double pesoCentroTablero, double pesoConexionesPotenciales) {
+        this.pesoFichasEnLinea = pesoFichasEnLinea;
+        this.pesoBloqueoOponente = pesoBloqueoOponente;
+        this.pesoCentroTablero = pesoCentroTablero;
+        this.pesoConexionesPotenciales = pesoConexionesPotenciales;
+    }
 
-        // Limitar el factor de ajuste máximo
-        factorAjuste = Math.min(factorAjuste, maxAjuste);
+    public void configurarPesosIniciales(double pesoInicial) {
+        this.pesoFichasEnLinea = pesoInicial;
+        this.pesoBloqueoOponente = pesoInicial;
+        this.pesoCentroTablero = pesoInicial;
+        this.pesoConexionesPotenciales = pesoInicial;
+    }
 
-        // Ajustar los pesos en función del resultado de la última partida
-        if (resultadoUltimaPartida == 0) {
-            PESO_FICHAS_EN_LINEA += PESO_FICHAS_EN_LINEA * factorAjuste;
-            PESO_BLOQUEO_OPPONENTE += PESO_BLOQUEO_OPPONENTE * factorAjuste;
-            PESO_CENTRO_TABLERO += PESO_CENTRO_TABLERO * factorAjuste;
-            PESO_CONEXIONES_POTENCIALES += PESO_CONEXIONES_POTENCIALES * factorAjuste;
-            // Ajustar otros pesos de manera similar para reflejar el resultado positivo
-            // Ajustar otros pesos de manera similar para reflejar el resultado negativo
-        } else if (resultadoUltimaPartida == 1) {
-            PESO_FICHAS_EN_LINEA += PESO_CONEXIONES_POTENCIALES * factorAjuste;
-            PESO_BLOQUEO_OPPONENTE += PESO_CONEXIONES_POTENCIALES * factorAjuste;
-            PESO_CENTRO_TABLERO += PESO_CONEXIONES_POTENCIALES * factorAjuste;
-            PESO_CONEXIONES_POTENCIALES += PESO_CONEXIONES_POTENCIALES * factorAjuste;
+    // Implementación de los métodos para la búsqueda iterativa de los pesos óptimos
+    public void buscarPesosOptimos(int numeroIteraciones, int numeroPartidasPorIteracion) {
+        // Paso 1: Configurar pesos uniformes
+        configurarPesosIniciales(1.0);
+
+        // Variables para almacenar los pesos óptimos y su desempeño
+        double mejorPesoFichasEnLinea = pesoFichasEnLinea;
+        double mejorPesoBloqueoOponente = pesoBloqueoOponente;
+        double mejorPesoCentroTablero = pesoCentroTablero;
+        double mejorPesoConexionesPotenciales = pesoConexionesPotenciales;
+        int mejorPuntaje = evaluarDesempenio();
+
+        // Variable para contabilizar el número de iteraciones sin mejoras
+        int iteracionesSinMejora = 0;
+
+        // Iterar para buscar los pesos óptimos
+        for (int iteracion = 0; iteracion < numeroIteraciones; iteracion++) {
+            // Paso 2: Generar nuevos conjuntos de pesos
+            double[] nuevosPesos = generarNuevosPesos();
+
+            // Variable para almacenar el desempeño del nuevo conjunto de pesos
+            int nuevoPuntaje = 0;
+
+            // Enfrentar los juegos de pesos actuales y nuevos en varias partidas
+            for (int i = 0; i < numeroPartidasPorIteracion; i++) {
+                nuevoPuntaje += enfrentarJuegosDePesos(nuevosPesos);
+            }
+
+            // Paso 4: Actualizar los pesos si el nuevo conjunto es mejor
+            if (nuevoPuntaje > mejorPuntaje) {
+                mejorPuntaje = nuevoPuntaje;
+                mejorPesoFichasEnLinea = nuevosPesos[0];
+                mejorPesoBloqueoOponente = nuevosPesos[1];
+                mejorPesoCentroTablero = nuevosPesos[2];
+                mejorPesoConexionesPotenciales = nuevosPesos[3];
+                iteracionesSinMejora = 0;
+            } else {
+                iteracionesSinMejora++;
+            }
+
+            // Paso 5: Parar la búsqueda si no hay mejoras en las últimas 3 iteraciones
+            if (iteracionesSinMejora >= 3) {
+                break;
+            }
+        }
+
+        // Imprimir los pesos óptimos
+        System.out.println("Pesos óptimos encontrados:");
+        System.out.println("Peso Fichas en línea: " + mejorPesoFichasEnLinea);
+        System.out.println("Peso Bloqueo Oponente: " + mejorPesoBloqueoOponente);
+        System.out.println("Peso Centro Tablero: " + mejorPesoCentroTablero);
+        System.out.println("Peso Conexiones Potenciales: " + mejorPesoConexionesPotenciales);
+    }
+
+    private double[] generarNuevosPesos() {
+        // Incrementar o decrementar un 10% los pesos actuales
+        double incremento = 0.1;
+        double[] nuevosPesos = {pesoFichasEnLinea, pesoBloqueoOponente, pesoCentroTablero, pesoConexionesPotenciales};
+        for (int i = 0; i < nuevosPesos.length; i++) {
+            nuevosPesos[i] += nuevosPesos[i] * incremento;
+            // Asegurar que los pesos no sean negativos
+            if (nuevosPesos[i] < 0) {
+                nuevosPesos[i] = 0;
+            }
+        }
+        return nuevosPesos;
+    }
+
+    // Método auxiliar para enfrentar juegos de pesos y contar el resultado
+    private int enfrentarJuegosDePesos(double[] pesosOponente) {
+        // Crear dos evaluadores ponderados con los pesos actuales y los pesos del oponente
+        EvaluadorPonderado evaluadorActual = new EvaluadorPonderado(pesoFichasEnLinea, pesoBloqueoOponente, pesoCentroTablero, pesoConexionesPotenciales);
+        EvaluadorPonderado evaluadorOponente = new EvaluadorPonderado(pesosOponente[0], pesosOponente[1], pesosOponente[2], pesosOponente[3]);
+
+        // Crear dos jugadores con los evaluadores correspondientes
+        Jugador jugadorActual = new Jugador(1);
+        jugadorActual.establecerEstrategia(evaluadorActual);
+        Jugador jugadorOponente = new Jugador(2);
+        jugadorOponente.establecerEstrategia(evaluadorOponente);
+
+        // Jugar una partida entre los dos jugadores
+        Tablero tablero = new Tablero();
+        String resultado = jugarPartida(tablero, jugadorActual, jugadorOponente);
+
+        // Contabilizar el resultado
+        if (resultado.equals("GANADO_J1")) {
+            return 1;
+        } else if (resultado.equals("GANADO_J2")) {
+            return -1;
+        } else {
+            return 0;
         }
     }
 
@@ -44,21 +129,19 @@ public class EvaluadorPonderado extends Evaluador {
         int valoracion = 0;
 
         // Evaluación de cantidad de fichas en línea
-        valoracion += PESO_FICHAS_EN_LINEA * contarFichasEnLinea(tablero, jugador);
+        valoracion += pesoFichasEnLinea * contarFichasEnLinea(tablero, jugador);
 
         // Evaluación de bloqueo de oponente
-        valoracion += PESO_BLOQUEO_OPPONENTE * contarFichasEnLinea(tablero, Jugador.alternarJugador(jugador));
+        valoracion += pesoBloqueoOponente * contarFichasEnLinea(tablero, Jugador.alternarJugador(jugador));
 
         // Evaluación del centro del tablero
-        valoracion += PESO_CENTRO_TABLERO * evaluarCentro(tablero, jugador);
+        valoracion += pesoCentroTablero * evaluarCentro(tablero, jugador);
 
         // Evaluación de conexiones potenciales
-        valoracion += PESO_CONEXIONES_POTENCIALES * contarConexionesPotenciales(tablero, jugador);
+        valoracion += pesoConexionesPotenciales * contarConexionesPotenciales(tablero, jugador);
 
         return valoracion;
     }
-
-    // Otros métodos de la clase
 
     // Método auxiliar para contar la cantidad de fichas del jugador en línea
     private int contarFichasEnLinea(Tablero tablero, int jugador) {
