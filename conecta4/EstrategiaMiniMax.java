@@ -145,5 +145,10 @@ public class EstrategiaMiniMax extends Estrategia {
         else
             return(v2);    
     }
+
+    @Override
+    public String getNombre() {
+        return "MINIMAX";
+    }
     
 }  // Fin clase EstartegiaMINIMAX

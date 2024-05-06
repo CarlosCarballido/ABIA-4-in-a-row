@@ -24,6 +24,10 @@ public class Jugador {
     public void establecerEstrategia(Estrategia estrategia) {
         _estrategia = estrategia;
     }
+
+    public String getNombreEstrategia() {
+        return _estrategia.getNombre();
+    }
     
     public int obtenerJugada(Tablero tablero) {
         return(_estrategia.buscarMovimiento(tablero, _identificador));

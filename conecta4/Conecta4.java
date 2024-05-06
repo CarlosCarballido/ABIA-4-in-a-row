@@ -31,6 +31,9 @@ public class Conecta4 {
         int tipoJugador2 = sc.nextInt();
     
         Jugador jugador2 = new Jugador(2);
+
+        int numeroIteraciones = 0;
+        int numeroPartidasPorIteracion = 0;
     
         switch (tipoJugador1) {
             case 1:
@@ -43,7 +46,11 @@ public class Conecta4 {
                 break;
             case 3:
                 EvaluadorPonderado evaluadorPonderadoJ1 = new EvaluadorPonderado();
-                evaluadorPonderadoJ1.buscarPesosOptimos(1, 1);
+                System.out.println("Introduzca el número de iteraciones con el que ajustar los pesos:");
+                numeroIteraciones = sc.nextInt();
+                System.out.println("Introduzca el número de partidas por iteración:");
+                numeroPartidasPorIteracion = sc.nextInt();
+                evaluadorPonderadoJ1.buscarPesosOptimos(numeroIteraciones, numeroPartidasPorIteracion);
                 jugador1.establecerEstrategia(new EstrategiaAlfaBeta(evaluadorPonderadoJ1, 4));
                 DEBUG("Jugador 1: máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)\n");
                 break;
@@ -60,14 +67,20 @@ public class Conecta4 {
                 break;
             case 3:
                 EvaluadorPonderado evaluadorPonderadoJ2 = new EvaluadorPonderado();
-                evaluadorPonderadoJ2.buscarPesosOptimos(2, 1);
+                System.out.println("Introduzca el número de iteraciones con el que ajustar los pesos:");
+                numeroIteraciones = sc.nextInt();
+                System.out.println("Introduzca el número de partidas por iteración:");
+                numeroPartidasPorIteracion = sc.nextInt();
+                evaluadorPonderadoJ2.buscarPesosOptimos(numeroIteraciones, numeroPartidasPorIteracion);
                 jugador2.establecerEstrategia(new EstrategiaAlfaBeta(evaluadorPonderadoJ2, 4));
                 DEBUG("Jugador 2: máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)\n");
                 break;
         }
 
         Tablero tablero = new Tablero();
-        jugar(jugador1, jugador2, tablero);
+        System.out.println("Introduzca el número de partidas a disputar:");
+        int partidasADisputar = sc.nextInt();
+        jugar(jugador1, jugador2, tablero, partidasADisputar);
     }
 
     static String procesarResultado(Tablero tablero) {
@@ -83,7 +96,7 @@ public class Conecta4 {
     
     
 
-    static void jugar(Jugador jugador1, Jugador jugador2, Tablero tablero) {
+    static void jugar(Jugador jugador1, Jugador jugador2, Tablero tablero, int numPartidas) {
         Scanner sc = new Scanner(System.in);
         boolean jugarOtraVez = true;
     
@@ -107,7 +120,10 @@ public class Conecta4 {
     
             // Mostrar el resultado de la partida
             String resultadoPartida = procesarResultado(tablero);
-            System.out.println("Resultado de la partida: " + resultadoPartida);
+            if (jugador1.getNombreEstrategia().equals("Humano") || jugador2.getNombreEstrategia().equals("Humano")){
+                tablero.mostrar();
+                System.out.println("Resultado de la partida: " + resultadoPartida);
+            }
     
             // Incrementar el contador correspondiente al resultado
             if (resultadoPartida.equals("GANA J1")) {
@@ -117,19 +133,25 @@ public class Conecta4 {
             } else if (resultadoPartida.equals("EMPATE")) {
                 numeroEmpates++;
             }
-
-            // Mostrar el número de partidas ganadas por cada jugador y el número de empates
-            System.out.println("Número de partidas ganadas por el jugador 1: " + numeroGanadasJ1);
-            System.out.println("Número de partidas ganadas por el jugador 2: " + numeroGanadasJ2);
-            System.out.println("Número de empates: " + numeroEmpates);
-    
-            // Preguntar si se desea jugar otra partida
-            System.out.println("¿Desea jugar otra partida? (S/N)");
-            String respuesta = sc.next();
-            if (!respuesta.equalsIgnoreCase("S")) {
-                jugarOtraVez = false;
+            
+            if ((!jugador1.getNombreEstrategia().equals("Humano") || !jugador2.getNombreEstrategia().equals("Humano")) && numPartidas > 1) {
+                jugarOtraVez = true;
+                numPartidas--;
+            } else {
+                System.out.println("¿Desea jugar otra vez? (s/n)");
+                String respuesta = sc.next();
+                if (respuesta.equals("s")) {
+                    jugarOtraVez = true;
+                } else {
+                    jugarOtraVez = false;
+                }
             }
+
         }
+        // Mostrar el número de partidas ganadas por cada jugador y el número de empates
+        System.out.println("Número de partidas ganadas por el jugador 1: " + numeroGanadasJ1);
+        System.out.println("Número de partidas ganadas por el jugador 2: " + numeroGanadasJ2);
+        System.out.println("Número de empates: " + numeroEmpates);
     }
     
       

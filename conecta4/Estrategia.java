@@ -19,5 +19,7 @@ public abstract class Estrategia {
     }
     
     public abstract int buscarMovimiento(Tablero tablero, int jugador);
+
+    public abstract String getNombre();
     
 }

@@ -55,4 +55,9 @@ public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
             return alfa;
         }
     }
+
+    @Override
+    public String getNombre() {
+        return "AlfaBeta";
+    }
 }

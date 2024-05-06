@@ -41,4 +41,9 @@ public class EstrategiaHumano extends Estrategia {
         return(buffer);
     }
 
+    @Override
+    public String getNombre() {
+      return "Humano";
+    }
+
 }
