@@ -37,11 +37,6 @@ public class Tablero {
         return(result);        
     }
     
-    protected void finalize() {
-        this._casillas = null;
-        this._posicionLibre = null;
-    }
-    
     public boolean equals(Object obj) {
         int col, fila;
         

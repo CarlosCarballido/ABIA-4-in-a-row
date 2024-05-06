@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 public class Conecta4 {
 
     private static int numeroGanadasJ1;
@@ -16,25 +15,24 @@ public class Conecta4 {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Seleccione el tipo de jugador 1:");
-        System.out.println("1. Humano");
-        System.out.println("2. Máquina (minimax con evaluador aleatorio y prof. busqueda 4)");
-        System.out.println("3. Máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)");
+        System.out.println("\nSeleccione el tipo de jugador 1:");
+        System.out.println("\n1. Humano");
+        System.out.println("\n2. Máquina (minimax con evaluador aleatorio y prof. busqueda 4)");
+        System.out.println("\n3. Máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)");
         int tipoJugador1 = sc.nextInt();
     
         Jugador jugador1 = new Jugador(1);
     
-        System.out.println("Seleccione el tipo de jugador 2:");
-        System.out.println("1. Humano");
-        System.out.println("2. Máquina (minimax con evaluador aleatorio y prof. busqueda 4)");
-        System.out.println("3. Máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)");
+        System.out.println("\nSeleccione el tipo de jugador 2:");
+        System.out.println("\n1. Humano");
+        System.out.println("\n2. Máquina (minimax con evaluador aleatorio y prof. busqueda 4)");
+        System.out.println("\n3. Máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)");
         int tipoJugador2 = sc.nextInt();
     
         Jugador jugador2 = new Jugador(2);
 
         int numeroIteraciones = 0;
-        int numeroPartidasPorIteracion = 0;
-    
+
         switch (tipoJugador1) {
             case 1:
                 jugador1.establecerEstrategia(new EstrategiaHumano());
@@ -46,11 +44,12 @@ public class Conecta4 {
                 break;
             case 3:
                 EvaluadorPonderado evaluadorPonderadoJ1 = new EvaluadorPonderado();
-                System.out.println("Introduzca el número de iteraciones con el que ajustar los pesos:");
+                System.out.println("\nIntroduzca el número de iteraciones con el que ajustar los pesos:");
                 numeroIteraciones = sc.nextInt();
-                System.out.println("Introduzca el número de partidas por iteración:");
-                numeroPartidasPorIteracion = sc.nextInt();
-                evaluadorPonderadoJ1.buscarPesosOptimos(numeroIteraciones, numeroPartidasPorIteracion);
+                long tiempoBuscarPesosOptimosJ1 = System.currentTimeMillis();
+                evaluadorPonderadoJ1.buscarPesosOptimos(numeroIteraciones);
+                tiempoBuscarPesosOptimosJ1 = System.currentTimeMillis() - tiempoBuscarPesosOptimosJ1;
+                System.out.println("\nTiempo empleado en buscar los pesos óptimos: " + tiempoBuscarPesosOptimosJ1 + " ms");
                 jugador1.establecerEstrategia(new EstrategiaAlfaBeta(evaluadorPonderadoJ1, 4));
                 DEBUG("Jugador 1: máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)\n");
                 break;
@@ -67,18 +66,19 @@ public class Conecta4 {
                 break;
             case 3:
                 EvaluadorPonderado evaluadorPonderadoJ2 = new EvaluadorPonderado();
-                System.out.println("Introduzca el número de iteraciones con el que ajustar los pesos:");
+                System.out.println("\nIntroduzca el número de iteraciones con el que ajustar los pesos:");
                 numeroIteraciones = sc.nextInt();
-                System.out.println("Introduzca el número de partidas por iteración:");
-                numeroPartidasPorIteracion = sc.nextInt();
-                evaluadorPonderadoJ2.buscarPesosOptimos(numeroIteraciones, numeroPartidasPorIteracion);
+                long tiempoBuscarPesosOptimosJ2 = System.currentTimeMillis();
+                evaluadorPonderadoJ2.buscarPesosOptimos(numeroIteraciones);
+                tiempoBuscarPesosOptimosJ2 = System.currentTimeMillis() - tiempoBuscarPesosOptimosJ2;
+                System.out.println("Tiempo empleado en buscar los pesos óptimos: " + tiempoBuscarPesosOptimosJ2 + " ms");
                 jugador2.establecerEstrategia(new EstrategiaAlfaBeta(evaluadorPonderadoJ2, 4));
                 DEBUG("Jugador 2: máquina (AlfaBeta con evaluador Ponderado y prof. busqueda 4)\n");
                 break;
         }
 
         Tablero tablero = new Tablero();
-        System.out.println("Introduzca el número de partidas a disputar:");
+        System.out.println("\nIntroduzca el número de partidas a disputar:");
         int partidasADisputar = sc.nextInt();
         jugar(jugador1, jugador2, tablero, partidasADisputar);
     }
@@ -122,7 +122,7 @@ public class Conecta4 {
             String resultadoPartida = procesarResultado(tablero);
             if (jugador1.getNombreEstrategia().equals("Humano") || jugador2.getNombreEstrategia().equals("Humano")){
                 tablero.mostrar();
-                System.out.println("Resultado de la partida: " + resultadoPartida);
+                System.out.println("\nResultado de la partida: " + resultadoPartida);
             }
     
             // Incrementar el contador correspondiente al resultado
@@ -138,7 +138,11 @@ public class Conecta4 {
                 jugarOtraVez = true;
                 numPartidas--;
             } else {
-                System.out.println("¿Desea jugar otra vez? (s/n)");
+                // Mostrar el número de partidas ganadas por cada jugador y el número de empates
+                System.out.println("Número de partidas ganadas por el jugador 1: " + numeroGanadasJ1);
+                System.out.println("Número de partidas ganadas por el jugador 2: " + numeroGanadasJ2);
+                System.out.println("Número de empates: " + numeroEmpates);
+                System.out.println("\n¿Desea jugar otra vez? (s/n)");
                 String respuesta = sc.next();
                 if (respuesta.equals("s")) {
                     jugarOtraVez = true;
@@ -146,14 +150,8 @@ public class Conecta4 {
                     jugarOtraVez = false;
                 }
             }
-
         }
-        // Mostrar el número de partidas ganadas por cada jugador y el número de empates
-        System.out.println("Número de partidas ganadas por el jugador 1: " + numeroGanadasJ1);
-        System.out.println("Número de partidas ganadas por el jugador 2: " + numeroGanadasJ2);
-        System.out.println("Número de empates: " + numeroEmpates);
     }
-    
       
     public static final void ERROR_FATAL(java.lang.String mensaje) {
         System.out.println("ERROR FATAL\n\t"+mensaje);
@@ -161,7 +159,7 @@ public class Conecta4 {
     }
     
     public static final void DEBUG(String str) {
-        System.out.print("DBG:"+str);
+        System.out.print("\nDBG:"+str);
     }
     
     public static final void ERROR(java.lang.String mensaje) {

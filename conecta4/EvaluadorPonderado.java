@@ -27,7 +27,7 @@ public class EvaluadorPonderado extends Evaluador {
         this.pesoConexionesPotenciales = pesoConexionesPotenciales;
     }
 
-    public void buscarPesosOptimos(int numeroIteraciones, int numeroPartidasPorIteracion) {
+    public void buscarPesosOptimos(int numeroIteraciones) {
         // Paso 1: Configurar pesos uniformes
         configurarPesosManualmente(INITIAL_WEIGHT, INITIAL_WEIGHT, INITIAL_WEIGHT, INITIAL_WEIGHT);
 
@@ -36,28 +36,29 @@ public class EvaluadorPonderado extends Evaluador {
         double mejorPesoBloqueoOponente = pesoBloqueoOponente;
         double mejorPesoCentroTablero = pesoCentroTablero;
         double mejorPesoConexionesPotenciales = pesoConexionesPotenciales;
+
+        // Variable para almacenar el puntaje óptimo
         int mejorPuntaje = 0;
+        // Variable para contabilizar el número de iteraciones sin mejoras
+        int iteracionesSinMejora = 0;
 
         // Iterar para buscar los pesos óptimos
-        for (int iteracion = 0; iteracion < numeroIteraciones; iteracion++) {
+        for (int i = 0; i < numeroIteraciones; i++) {
             // Paso 2: Generar nuevos conjuntos de pesos
             double[] nuevosPesos = generarNuevosPesos();
 
             // Variable para almacenar el desempeño del nuevo conjunto de pesos
             int nuevoPuntaje = 0;
 
-            // Variable para contabilizar el número de iteraciones sin mejoras
-            int iteracionesSinMejora = 0;
-
             // Enfrentar los juegos de pesos actuales y nuevos en varias partidas
-            for (int i = 0; i < numeroPartidasPorIteracion; i++) {
+            
                 // Alternar quién comienza primero
                 if (i % 2 == 0) {
                     nuevoPuntaje += enfrentarJuegosDePesos(nuevosPesos);
                 } else {
                     nuevoPuntaje -= enfrentarJuegosDePesos(nuevosPesos);
                 }
-            }
+            
 
             // Paso 4: Actualizar los pesos si el nuevo conjunto es mejor
             if (nuevoPuntaje > mejorPuntaje) {
@@ -78,6 +79,7 @@ public class EvaluadorPonderado extends Evaluador {
                 break;
             }
         }
+        
 
         // Imprimir los pesos óptimos
         System.out.println("Pesos óptimos encontrados:");
