@@ -6,7 +6,6 @@ public class EvaluadorPonderado extends Evaluador {
 
     private static final double INITIAL_WEIGHT = 1.0;
     private static final double WEIGHT_INCREMENT = 0.1;
-    private static final int MIN_FICHAS_EN_LINEA = 4;
 
     private double pesoFichasEnLinea;
     private double pesoBloqueoOponente;

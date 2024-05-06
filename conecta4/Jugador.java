@@ -12,6 +12,8 @@ public class Jugador {
     
     private Estrategia _estrategia;
     private int _identificador;
+    private int victorias;
+    private int empates;
     
     /** Creates a new instance of Jugador */
     public Jugador() {
@@ -19,6 +21,8 @@ public class Jugador {
     
     public Jugador(int identificador) {
         _identificador = identificador;
+        victorias = 0;
+        empates = 0;
     }
     
     public void establecerEstrategia(Estrategia estrategia) {
@@ -33,11 +37,36 @@ public class Jugador {
         return(_estrategia.buscarMovimiento(tablero, _identificador));
     }
     
+    public void setIdentificador(int identificador) {
+        _identificador = identificador;
+    }
+
     public int getIdentificador() {
         return(_identificador);
     }
     
     public static final int alternarJugador(int jugadorActual) {
         return(((jugadorActual%2)+1));  // Alterna entre jugador 1 y 2
-    }    
+    }
+
+    public void incrementarVictorias() {
+        victorias++;
+    }
+
+    public void incrementarEmpates() {
+        empates++;
+    }
+
+    public void reiniciarEstadisticas() {
+        victorias = 0;
+        empates = 0;
+    }
+
+    public int getNumeroVictorias() {
+        return victorias;
+    }
+
+    public int getNumeroEmpates() {
+        return empates;
+    }
 }
