@@ -9,6 +9,7 @@ public class EstrategiaMiniMax extends Estrategia {
     private long tiempoTotalMovimientos = 0;
     private int movimientosRealizados = 0;
     private int nodosEvaluados = 0;
+    private int busquedasRealizadas = 0;
 
     protected Evaluador _evaluador;
     protected int _capaMaxima;
@@ -44,10 +45,11 @@ public class EstrategiaMiniMax extends Estrategia {
 
     @Override
     protected String getNumeroNodosEvaluados() {
-        return String.valueOf(nodosEvaluados); // Return the number of nodes evaluated
+        return String.valueOf(nodosEvaluados/busquedasRealizadas); // Return the number of nodes evaluated
     }
     
     public int buscarMovimiento(Tablero tablero, int jugador) {
+        busquedasRealizadas++;
         long tiempoInicio = System.nanoTime();
         // Implementa primera capa del MINIMAX + seleccion jugada mas prometedora
 	// 

@@ -73,8 +73,8 @@ public class EvaluadorPonderado extends Evaluador {
                 iteracionesSinMejora++;
             }
 
-            // Paso 5: Parar la búsqueda si no hay mejoras en las últimas 3 iteraciones
-            if (iteracionesSinMejora >= 3) {
+            // Paso 5: Parar la búsqueda si no hay mejoras en las últimas 100 iteraciones
+            if (iteracionesSinMejora >= 100) {
                 break;
             }
         }

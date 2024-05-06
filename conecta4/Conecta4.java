@@ -174,6 +174,8 @@ public class Conecta4 {
             if (jugador1.getNombreEstrategia().equals("Humano") || jugador2.getNombreEstrategia().equals("Humano")){
                 tablero.mostrar();
                 System.out.println("\nResultado de la partida: " + resultadoPartida);
+                incrementarResultados(resultadoPartida, jugador1, jugador2);
+                numPartidas--;
             }
     
             
@@ -193,8 +195,8 @@ public class Conecta4 {
                 System.out.println("Porcentaje de empates: " + ((jugador1.getNumeroEmpates() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())) + "%");
                 System.out.println("Tiempo medio por movimiento del jugador 1: " + jugador1.getTiempoMedioMovimiento() + " ns");
                 System.out.println("Tiempo medio por movimiento del jugador 2: " + jugador2.getTiempoMedioMovimiento() + " ns");
-                System.out.println("Número de nodos evaluados por el jugador 1: " + jugador1.getNumeroNodosEvaluados());
-                System.out.println("Número de nodos evaluados por el jugador 2: " + jugador2.getNumeroNodosEvaluados());
+                System.out.println("Número de nodos evaluados por busqueda promedio del jugador 1: " + jugador1.getNumeroNodosEvaluados());
+                System.out.println("Número de nodos evaluados por busqueda promedio del jugador 2: " + jugador2.getNumeroNodosEvaluados());
                 System.out.println();
             }
         }
