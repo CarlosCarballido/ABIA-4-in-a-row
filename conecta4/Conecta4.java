@@ -1,9 +1,6 @@
 import java.util.Scanner;
 public class Conecta4 {
 
-    private static int numeroGanadasJ1;
-    private static int numeroGanadasJ2;
-    private static int numeroEmpates;
     private static boolean evaluarOtraVez;
     private static boolean jugarOtraVez;
 
