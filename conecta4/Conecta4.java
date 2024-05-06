@@ -188,11 +188,11 @@ public class Conecta4 {
                 System.out.println("\nNúmero de partidas ganadas por el jugador 1: " + jugador1.getNumeroVictorias());
                 System.out.println("Número de partidas ganadas por el jugador 2: " + jugador2.getNumeroVictorias());
                 System.out.println("Número de empates: " + jugador1.getNumeroEmpates());
-                System.out.println("Porcentaje de partidas ganadas por el jugador 1: " + 100*jugador1.getPorcentajeVictorias() + "%");
-                System.out.println("Porcentaje de partidas perdidas por el jugador 1: " + 100*jugador2.getPorcentajeVictorias() + "%");
-                System.out.println("Porcentaje de empates jugador 1: " + 100*jugador1.getPorcentajeEmpates() + "%");
-                System.out.println("Tiempo medio por movimiento del jugador 1: " + jugador1.getTiempoMedioMovimiento() + " ms");
-                System.out.println("Tiempo medio por movimiento del jugador 2: " + jugador2.getTiempoMedioMovimiento() + " ms");
+                System.out.println("Porcentajes de victorias:" + "Jugador 1: " + ((jugador1.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
+                System.out.println("Jugador 2: " + ((jugador2.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
+                System.out.println("Porcentaje de empates: " + ((jugador1.getNumeroEmpates() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
+                System.out.println("Tiempo medio por movimiento del jugador 1: " + jugador1.getTiempoMedioMovimiento() + " ns");
+                System.out.println("Tiempo medio por movimiento del jugador 2: " + jugador2.getTiempoMedioMovimiento() + " ns");
                 System.out.println("Número de nodos evaluados por el jugador 1: " + jugador1.getNumeroNodosEvaluados());
                 System.out.println("Número de nodos evaluados por el jugador 2: " + jugador2.getNumeroNodosEvaluados());
                 System.out.println();

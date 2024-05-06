@@ -48,7 +48,7 @@ public class EstrategiaMiniMax extends Estrategia {
     }
     
     public int buscarMovimiento(Tablero tablero, int jugador) {
-        long tiempoInicio = System.currentTimeMillis();
+        long tiempoInicio = System.nanoTime();
         // Implementa primera capa del MINIMAX + seleccion jugada mas prometedora
 	// 
 	// 
@@ -83,7 +83,7 @@ public class EstrategiaMiniMax extends Estrategia {
                 }
             }
         }
-        long tiempoFin = System.currentTimeMillis();
+        long tiempoFin = System.nanoTime();
         tiempoTotalMovimientos += tiempoFin - tiempoInicio;
         movimientosRealizados++;
         return(mejorPosicion);        

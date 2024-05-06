@@ -85,18 +85,6 @@ public class Jugador {
         return derrotas;
     }
 
-    public int getPorcentajeVictorias() {
-        return (getNumeroVictorias() / getNumeroPartidasJugadas());      
-    }
-
-    public int getPorcentajeEmpates() {
-        return (getNumeroEmpates() / getNumeroPartidasJugadas());
-    }
-
-    public int getPorcentajeDerrotas() {
-        return (getNumeroDerrotas() / getNumeroPartidasJugadas());
-    }
-
     public int getTiempoMedioMovimiento() {
         return _estrategia.getTiempoMedioMovimiento();
     }
