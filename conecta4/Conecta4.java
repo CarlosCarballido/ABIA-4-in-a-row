@@ -188,9 +188,9 @@ public class Conecta4 {
                 System.out.println("\nNúmero de partidas ganadas por el jugador 1: " + jugador1.getNumeroVictorias());
                 System.out.println("Número de partidas ganadas por el jugador 2: " + jugador2.getNumeroVictorias());
                 System.out.println("Número de empates: " + jugador1.getNumeroEmpates());
-                System.out.println("Porcentajes de victorias:" + "Jugador 1: " + ((jugador1.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
-                System.out.println("Jugador 2: " + ((jugador2.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
-                System.out.println("Porcentaje de empates: " + ((jugador1.getNumeroEmpates() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())));
+                System.out.println("Porcentajes de victorias:" + "Jugador 1: " + ((jugador1.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())) + "%");
+                System.out.println("Jugador 2: " + ((jugador2.getNumeroVictorias() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())) + "%");
+                System.out.println("Porcentaje de empates: " + ((jugador1.getNumeroEmpates() * 100) / (jugador1.getNumeroVictorias()+jugador1.getNumeroEmpates()+jugador2.getNumeroVictorias())) + "%");
                 System.out.println("Tiempo medio por movimiento del jugador 1: " + jugador1.getTiempoMedioMovimiento() + " ns");
                 System.out.println("Tiempo medio por movimiento del jugador 2: " + jugador2.getTiempoMedioMovimiento() + " ns");
                 System.out.println("Número de nodos evaluados por el jugador 1: " + jugador1.getNumeroNodosEvaluados());
@@ -212,12 +212,12 @@ public class Conecta4 {
             switch (jugadorOptimo) {
                 case 1:
                     EvaluadorPonderado evaluadorPonderadoJ2 = new EvaluadorPonderado();
-                    evaluadorPonderadoJ2.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                    evaluadorPonderadoJ2.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
                     jugar(jugador1, jugador2, tablero, numPartidasComparacion);
                     break;
                 case 2:
                     EvaluadorPonderado evaluadorPonderadoJ1 = new EvaluadorPonderado();
-                    evaluadorPonderadoJ1.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                    evaluadorPonderadoJ1.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
                     jugar(jugador1, jugador2, tablero, numPartidasComparacion);
                     break;
             } 
@@ -225,12 +225,12 @@ public class Conecta4 {
             if (jugador1.getNombreEstrategia().equals("AlfaBeta")) {
                 System.out.println("El jugador 1 tiene los pesos optimos y el jugador 2 tiene los pesos iniciales.");
                 EvaluadorPonderado ep = new EvaluadorPonderado();
-                ep.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                ep.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
                 jugador2.establecerEstrategia(new EstrategiaAlfaBeta(ep, 4));
             } else {
                 System.out.println("El jugador 2 tiene los pesos optimos y el jugador 1 tiene los pesos iniciales.");
                 EvaluadorPonderado ep = new EvaluadorPonderado();
-                ep.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                ep.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
                 jugador1.establecerEstrategia(new EstrategiaAlfaBeta(ep, 4));
             }
             System.out.println("Estadísticas después de la comparación:");
