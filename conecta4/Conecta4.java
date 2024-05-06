@@ -4,6 +4,8 @@ public class Conecta4 {
     private static int numeroGanadasJ1;
     private static int numeroGanadasJ2;
     private static int numeroEmpates;
+    private static boolean evaluarOtraVez;
+    private static boolean jugarOtraVez;
 
     /** Creates a new instance of Conecta4 */
     public Conecta4() {
@@ -80,7 +82,44 @@ public class Conecta4 {
         Tablero tablero = new Tablero();
         System.out.println("\nIntroduzca el número de partidas a disputar:");
         int partidasADisputar = sc.nextInt();
-        jugar(jugador1, jugador2, tablero, partidasADisputar);
+        
+        do{
+            jugar(jugador1, jugador2, tablero, partidasADisputar);
+            System.out.println("\n¿Desea jugar otra vez? (s/n)");
+            String respuesta = sc.next();
+            if (respuesta.equals("s")) {
+                jugador1.reiniciarEstadisticas();
+                jugador2.reiniciarEstadisticas();
+                System.out.println("\nIntroduzca el número de partidas a disputar:");
+                partidasADisputar = sc.nextInt();
+                jugarOtraVez = true;
+            } else {
+                jugarOtraVez = false;
+            }
+         } while (jugarOtraVez);
+
+        jugador1.reiniciarEstadisticas();
+        jugador2.reiniciarEstadisticas();
+
+        if (jugador1.getNombreEstrategia().equals("AlfaBeta") || jugador2.getNombreEstrategia().equals("AlfaBeta")) {
+            System.out.println("\n¿Desea evaluar los pesos optimos contra los iniciales? (s/n)");
+            String respuesta = sc.next();
+            if (respuesta.equals("s")) {
+                do {
+                    compararEstrategias(jugador1, jugador2, tablero);
+                    System.out.println("\n¿Desea evaluar otra vez? (s/n)");
+                    respuesta = sc.next();
+                    if (respuesta.equals("s")) {
+                        evaluarOtraVez = true;
+                        jugador1.reiniciarEstadisticas();
+                        jugador2.reiniciarEstadisticas();
+                    } else {
+                        evaluarOtraVez = false;
+        
+                    }
+                } while (evaluarOtraVez);
+            }
+        }
     }
 
     static String procesarResultado(Tablero tablero) {
@@ -93,16 +132,25 @@ public class Conecta4 {
         }
         return "";
     }
-    
+
+    private static void incrementarResultados(String resultadoPartida, Jugador jugador1, Jugador jugador2) {
+        if (resultadoPartida.equals("GANA J1")) {
+            jugador1.incrementarVictorias();
+        } else if (resultadoPartida.equals("GANA J2")) {
+            jugador2.incrementarVictorias();
+        } else if (resultadoPartida.equals("EMPATE")) {
+            jugador1.incrementarEmpates();
+        }
+    }
     
 
     static void jugar(Jugador jugador1, Jugador jugador2, Tablero tablero, int numPartidas) {
         Scanner sc = new Scanner(System.in);
-        boolean jugarOtraVez = true;
+        jugarOtraVez = true;
     
         while (jugarOtraVez) {
             tablero.inicializar(); // Inicializar el tablero para una nueva partida
-
+    
             while (!tablero.esFinal()) {
                 // Turno del jugador 1
                 int resultado = tablero.jugarPartida(jugador1, jugador2);
@@ -125,41 +173,68 @@ public class Conecta4 {
                 System.out.println("\nResultado de la partida: " + resultadoPartida);
             }
     
-            // Incrementar el contador correspondiente al resultado
-            if (resultadoPartida.equals("GANA J1")) {
-                numeroGanadasJ1++;
-            } else if (resultadoPartida.equals("GANA J2")) {
-                numeroGanadasJ2++;
-            } else if (resultadoPartida.equals("EMPATE")) {
-                numeroEmpates++;
-            }
             
-            if ((!jugador1.getNombreEstrategia().equals("Humano") || !jugador2.getNombreEstrategia().equals("Humano")) && numPartidas > 1) {
+    
+            if ((!jugador1.getNombreEstrategia().equals("Humano") || !jugador2.getNombreEstrategia().equals("Humano")) && numPartidas >= 1) {
+                incrementarResultados(resultadoPartida, jugador1, jugador2);
                 jugarOtraVez = true;
                 numPartidas--;
             } else {
+                jugarOtraVez = false;
                 // Mostrar el número de partidas ganadas por cada jugador y el número de empates
-                System.out.println("Número de partidas ganadas por el jugador 1: " + numeroGanadasJ1);
-                System.out.println("Número de partidas ganadas por el jugador 2: " + numeroGanadasJ2);
-                System.out.println("Número de empates: " + numeroEmpates);
-                System.out.println("\n¿Desea jugar otra vez? (s/n)");
-                String respuesta = sc.next();
-                if (respuesta.equals("s")) {
-                    jugarOtraVez = true;
-                } else {
-                    jugarOtraVez = false;
-                }
+                System.out.println("Número de partidas ganadas por el jugador 1: " + jugador1.getNumeroVictorias());
+                System.out.println("Número de partidas ganadas por el jugador 2: " + jugador2.getNumeroVictorias());
+                System.out.println("Número de empates: " + jugador1.getNumeroEmpates());
+                System.out.println();
             }
         }
     }
-      
+    
+
+    private static void compararEstrategias(Jugador jugador1, Jugador jugador2, Tablero tablero) {    
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduzca el número de partidas a disputar en la comparacion:");
+        int numPartidasComparacion = sc.nextInt();
+        if (jugador1.getNombreEstrategia().equals("AlfaBeta") && jugador2.getNombreEstrategia().equals("AlfaBeta")) {
+            System.out.println("¿Qué jugador desea que juegue con los pesos óptimos? (1/2)");
+            int jugadorOptimo = sc.nextInt();
+            System.out.println("Estadísticas después de la comparación:");
+            switch (jugadorOptimo) {
+                case 1:
+                    EvaluadorPonderado evaluadorPonderadoJ2 = new EvaluadorPonderado();
+                    evaluadorPonderadoJ2.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                    jugar(jugador1, jugador2, tablero, numPartidasComparacion);
+                    break;
+                case 2:
+                    EvaluadorPonderado evaluadorPonderadoJ1 = new EvaluadorPonderado();
+                    evaluadorPonderadoJ1.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                    jugar(jugador1, jugador2, tablero, numPartidasComparacion);
+                    break;
+            } 
+        } else {
+            if (jugador1.getNombreEstrategia().equals("AlfaBeta")) {
+                System.out.println("El jugador 1 tiene los pesos optimos y el jugador 2 tiene los pesos iniciales.");
+                EvaluadorPonderado ep = new EvaluadorPonderado();
+                ep.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                jugador2.establecerEstrategia(new EstrategiaAlfaBeta(ep, 4));
+            } else {
+                System.out.println("El jugador 2 tiene los pesos optimos y el jugador 1 tiene los pesos iniciales.");
+                EvaluadorPonderado ep = new EvaluadorPonderado();
+                ep.configurarPesosManualmente(1.0, 1.0, 1.0, 1.0);
+                jugador1.establecerEstrategia(new EstrategiaAlfaBeta(ep, 4));
+            }
+            System.out.println("Estadísticas después de la comparación:");
+            jugar(jugador1, jugador2, tablero, numPartidasComparacion);
+        }
+    }
+    
     public static final void ERROR_FATAL(java.lang.String mensaje) {
         System.out.println("ERROR FATAL\n\t"+mensaje);
         System.exit(0); // Finalizar aplicacion
     }
     
     public static final void DEBUG(String str) {
-        System.out.print("\nDBG:"+str);
+        System.out.println("\nDBG:"+str);
     }
     
     public static final void ERROR(java.lang.String mensaje) {
