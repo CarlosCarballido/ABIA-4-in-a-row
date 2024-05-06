@@ -46,4 +46,13 @@ public class EstrategiaHumano extends Estrategia {
       return "Humano";
     }
 
+    @Override
+    protected int getTiempoMedioMovimiento() {
+      return 0;
+    }
+
+    @Override
+    protected String getNumeroNodosEvaluados() {
+      return "";
+    }
 }

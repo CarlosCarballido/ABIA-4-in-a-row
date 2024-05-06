@@ -6,6 +6,10 @@ public class EstrategiaMiniMax extends Estrategia {
      * "establecerEvaluador()" y "establecerCapaMaxima()"
      */
      
+    private long tiempoTotalMovimientos = 0;
+    private int movimientosRealizados = 0;
+    private int nodosEvaluados = 0;
+
     protected Evaluador _evaluador;
     protected int _capaMaxima;
 
@@ -23,8 +27,28 @@ public class EstrategiaMiniMax extends Estrategia {
        this.establecerEvaluador(evaluador);  
        this.establecerCapaMaxima(capaMaxima);
     }
+
+    @Override
+    public String getNombre() {
+        return "MINIMAX";
+    }
+
+    @Override
+    protected int getTiempoMedioMovimiento() {
+        if (movimientosRealizados == 0) {
+            return 0; // No se ha realizado ningún movimiento, tiempo medio es 0
+        } else {
+            return (int) (tiempoTotalMovimientos / movimientosRealizados); // Tiempo medio en milisegundos
+        }
+    }
+
+    @Override
+    protected String getNumeroNodosEvaluados() {
+        return String.valueOf(nodosEvaluados); // Return the number of nodes evaluated
+    }
     
     public int buscarMovimiento(Tablero tablero, int jugador) {
+        long tiempoInicio = System.currentTimeMillis();
         // Implementa primera capa del MINIMAX + seleccion jugada mas prometedora
 	// 
 	// 
@@ -48,7 +72,8 @@ public class EstrategiaMiniMax extends Estrategia {
                 nuevoTablero.obtenerGanador();
 
                 // evaluarlo (OJO: cambiar jugador, establecer capa a 1)
-                valorSucesor = MINIMAX(nuevoTablero,Jugador.alternarJugador(jugador),1);                
+                valorSucesor = MINIMAX(nuevoTablero,Jugador.alternarJugador(jugador),1);     
+                nodosEvaluados++; // Increment the counter of nodes evaluated           
                 nuevoTablero = null; // Ya no se necesita 
                 
                 // tomar mejor valor            
@@ -58,6 +83,9 @@ public class EstrategiaMiniMax extends Estrategia {
                 }
             }
         }
+        long tiempoFin = System.currentTimeMillis();
+        tiempoTotalMovimientos += tiempoFin - tiempoInicio;
+        movimientosRealizados++;
         return(mejorPosicion);        
     }
     
@@ -104,6 +132,7 @@ public class EstrategiaMiniMax extends Estrategia {
                 
                 // evaluarlo (OJO: cambiar jugador e incrementar capa)
                 valorSucesor = MINIMAX(nuevoTablero,Jugador.alternarJugador(jugador),(capa+1));
+                nodosEvaluados++; // Increment the counter of nodes evaluated
                 nuevoTablero = null; // Ya no se necesita 
                 // tomar minimo o maximo             
                 if (esCapaMIN(capa)) {
@@ -144,11 +173,6 @@ public class EstrategiaMiniMax extends Estrategia {
             return(v1);
         else
             return(v2);    
-    }
-
-    @Override
-    public String getNombre() {
-        return "MINIMAX";
     }
     
 }  // Fin clase EstartegiaMINIMAX

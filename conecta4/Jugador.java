@@ -14,6 +14,7 @@ public class Jugador {
     private int _identificador;
     private int victorias;
     private int empates;
+    private int derrotas;
     
     /** Creates a new instance of Jugador */
     public Jugador() {
@@ -23,6 +24,7 @@ public class Jugador {
         _identificador = identificador;
         victorias = 0;
         empates = 0;
+        derrotas = 0;
     }
     
     public void establecerEstrategia(Estrategia estrategia) {
@@ -57,9 +59,18 @@ public class Jugador {
         empates++;
     }
 
+    public void incrementarDerrotas() {
+        derrotas++;
+    }
+
     public void reiniciarEstadisticas() {
         victorias = 0;
         empates = 0;
+        derrotas = 0;
+    }
+
+    public int getNumeroPartidasJugadas() {
+        return (getNumeroVictorias() + getNumeroEmpates() + getNumeroDerrotas());
     }
 
     public int getNumeroVictorias() {
@@ -68,5 +79,29 @@ public class Jugador {
 
     public int getNumeroEmpates() {
         return empates;
+    }
+
+    public int getNumeroDerrotas() {
+        return derrotas;
+    }
+
+    public int getPorcentajeVictorias() {
+        return (getNumeroVictorias() / getNumeroPartidasJugadas());      
+    }
+
+    public int getPorcentajeEmpates() {
+        return (getNumeroEmpates() / getNumeroPartidasJugadas());
+    }
+
+    public int getPorcentajeDerrotas() {
+        return (getNumeroDerrotas() / getNumeroPartidasJugadas());
+    }
+
+    public int getTiempoMedioMovimiento() {
+        return _estrategia.getTiempoMedioMovimiento();
+    }
+
+    public String getNumeroNodosEvaluados() {
+        return _estrategia.getNumeroNodosEvaluados();
     }
 }
