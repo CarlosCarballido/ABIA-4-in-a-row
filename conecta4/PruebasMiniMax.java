@@ -9,19 +9,12 @@ public class PruebasMiniMax {
         Jugador jugador2 = new Jugador(2);
         
         // Establecer la estrategia MINIMAX sin poda ALFA-BETA con diferentes profundidades
-        EstrategiaMiniMax minimaxProfundidad3 = new EstrategiaMiniMax(new EvaluadorAleatorio(), 3);
-        EstrategiaMiniMax minimaxProfundidad4 = new EstrategiaMiniMax(new EvaluadorAleatorio(), 4);
-        EstrategiaMiniMax minimaxProfundidad5 = new EstrategiaMiniMax(new EvaluadorAleatorio(), 5);
-        EstrategiaMiniMax minimaxProfundidad6 = new EstrategiaMiniMax(new EvaluadorAleatorio(), 6);
         
-        jugador1.establecerEstrategia(minimaxProfundidad3);
-        jugador2.establecerEstrategia(minimaxProfundidad3);
-        
-        // Ejecutar pruebas con diferentes profundidades
-        ejecutarPrueba(tablero, jugador1, jugador2, 3);
-        ejecutarPrueba(tablero, jugador1, jugador2, 4);
-        ejecutarPrueba(tablero, jugador1, jugador2, 5);
-        ejecutarPrueba(tablero, jugador1, jugador2, 6);
+        for (int i = 3; i <= 6; i++) {
+            jugador1.establecerEstrategia(new EstrategiaMiniMax(new EvaluadorAleatorio(), i));
+            jugador2.establecerEstrategia(new EstrategiaMiniMax(new EvaluadorAleatorio(), i));
+            ejecutarPrueba(tablero, jugador1, jugador2, i);
+        }
     }
     
     public static void ejecutarPrueba(Tablero tablero, Jugador jugador1, Jugador jugador2, int profundidad) {        
