@@ -1,4 +1,9 @@
 public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
+
+    private long tiempoTotalMovimientos = 0;
+    private int movimientosRealizados = 0;
+    private int nodosEvaluados = 0; // New variable to count nodes evaluated
+
     public EstrategiaAlfaBeta() {
         super();
     }
@@ -7,7 +12,28 @@ public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
         super(evaluador, capaMaxima);
     }
 
-    public int MINIMAX(Tablero tablero, int jugador, int capa, int alfa, int beta) {
+    @Override
+    protected int getTiempoMedioMovimiento() {
+        if (movimientosRealizados == 0) {
+            return 0; // No se ha realizado ningún movimiento, tiempo medio es 0
+        } else {
+            return (int) (tiempoTotalMovimientos / movimientosRealizados); // Tiempo medio en milisegundos
+        }
+    }
+    
+    @Override
+    public String getNombre() {
+        return "AlfaBeta";
+    }
+
+    @Override
+    protected String getNumeroNodosEvaluados() {
+        return String.valueOf(nodosEvaluados); // Return the number of nodes evaluated
+    }
+
+    public int ALFABETA(Tablero tablero, int jugador, int capa, int alfa, int beta) {
+        long tiempoInicio = System.currentTimeMillis();
+         // Increment the counter for each node evaluated
         if (tablero.hayEmpate()) {
             return 0;
         }
@@ -29,14 +55,17 @@ public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
                     Tablero nuevoTablero = (Tablero) tablero.clone();
                     nuevoTablero.anadirFicha(col, jugador);
                     nuevoTablero.obtenerGanador();
-
-                    beta = minimo2(beta, MINIMAX(nuevoTablero, Jugador.alternarJugador(jugador), capa + 1, alfa, beta));
+                    nodosEvaluados++;
+                    beta = minimo2(beta, ALFABETA(nuevoTablero, Jugador.alternarJugador(jugador), capa + 1, alfa, beta));
                     nuevoTablero = null;
                     if (beta <= alfa) {
                         return beta;
                     }
                 }
             }
+            movimientosRealizados++;
+            long tiempoFin = System.currentTimeMillis();
+            tiempoTotalMovimientos += (tiempoFin - tiempoInicio);
             return beta;
         } else {
             for (int col = 0; col < Tablero.NCOLUMNAS; col++) {
@@ -44,20 +73,18 @@ public class EstrategiaAlfaBeta extends EstrategiaMiniMax {
                     Tablero nuevoTablero = (Tablero) tablero.clone();
                     nuevoTablero.anadirFicha(col, jugador);
                     nuevoTablero.obtenerGanador();
-
-                    alfa = maximo2(alfa, MINIMAX(nuevoTablero, Jugador.alternarJugador(jugador), capa + 1, alfa, beta));
+                    nodosEvaluados++;
+                    alfa = maximo2(alfa, ALFABETA(nuevoTablero, Jugador.alternarJugador(jugador), capa + 1, alfa, beta));
                     nuevoTablero = null;
                     if (beta <= alfa) {
                         return alfa;
                     }
                 }
             }
+            movimientosRealizados++;
+            long tiempoFin = System.currentTimeMillis();
+            tiempoTotalMovimientos += (tiempoFin - tiempoInicio);
             return alfa;
         }
-    }
-
-    @Override
-    public String getNombre() {
-        return "AlfaBeta";
     }
 }
