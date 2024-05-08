@@ -212,12 +212,10 @@ public class Conecta4 {
                 case 1:
                     EvaluadorPonderado evaluadorPonderadoJ2 = new EvaluadorPonderado();
                     evaluadorPonderadoJ2.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
-                    jugar(jugador1, jugador2, tablero, numPartidasComparacion);
                     break;
                 case 2:
                     EvaluadorPonderado evaluadorPonderadoJ1 = new EvaluadorPonderado();
                     evaluadorPonderadoJ1.configurarPesosManualmente(0.1, 0.1, 0.1, 0.1);
-                    jugar(jugador1, jugador2, tablero, numPartidasComparacion);
                     break;
             } 
         } else {
@@ -233,8 +231,8 @@ public class Conecta4 {
                 jugador1.establecerEstrategia(new EstrategiaAlfaBeta(ep, 4));
             }
             System.out.println("Estadísticas después de la comparación:");
-            jugar(jugador1, jugador2, tablero, numPartidasComparacion);
         }
+        jugar(jugador1, jugador2, tablero, numPartidasComparacion);
     }
     public static final void ERROR_FATAL(java.lang.String mensaje) {
         System.out.println("ERROR FATAL\n\t"+mensaje);

@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class EvaluadorPonderado extends Evaluador {
@@ -73,8 +71,8 @@ public class EvaluadorPonderado extends Evaluador {
                 iteracionesSinMejora++;
             }
 
-            // Paso 5: Parar la búsqueda si no hay mejoras en las últimas 100 iteraciones
-            if (iteracionesSinMejora >= 100) {
+            // Paso 5: Parar la búsqueda si no hay mejoras en las últimas 30 iteraciones
+            if (iteracionesSinMejora >= 30) {
                 break;
             }
         }
