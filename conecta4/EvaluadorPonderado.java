@@ -28,26 +28,21 @@ public class EvaluadorPonderado extends Evaluador {
         // Paso 1: Configurar pesos uniformes
         configurarPesosManualmente(INITIAL_WEIGHT, INITIAL_WEIGHT, INITIAL_WEIGHT, INITIAL_WEIGHT);
 
-        // Variable para almacenar los pesos óptimos y su desempeño
         double mejorPesoFichasEnLinea = pesoFichasEnLinea;
         double mejorPesoBloqueoOponente = pesoBloqueoOponente;
         double mejorPesoCentroTablero = pesoCentroTablero;
         double mejorPesoConexionesPotenciales = pesoConexionesPotenciales;
 
-        // Variable para almacenar el puntaje óptimo
         int mejorPuntaje = 0;
-        // Variable para contabilizar el número de iteraciones sin mejoras
         int iteracionesSinMejora = 0;
 
-        // Iterar para buscar los pesos óptimos
         for (int i = 0; i < numeroIteraciones; i++) {
             // Paso 2: Generar nuevos conjuntos de pesos
             double[] nuevosPesos = generarNuevosPesos();
 
-            // Variable para almacenar el desempeño del nuevo conjunto de pesos
             int nuevoPuntaje = 0;
 
-            // Enfrentar los juegos de pesos actuales y nuevos en varias partidas
+            // Paso 3: Enfrentar juegos de pesos
             
                 // Alternar quién comienza primero
                 if (i % 2 == 0) {
